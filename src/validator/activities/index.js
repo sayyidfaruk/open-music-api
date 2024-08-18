@@ -1,5 +1,5 @@
 const InvariantError = require('../../exception/InvariantError');
-const { ActivitiesPayloadSchema } = require('./schema');
+const ActivitiesPayloadSchema = require('./schema');
 
 const ActivitiesValidator = {
   validateActivityPayload: (payload) => {
