@@ -39,6 +39,7 @@ class PlaylistsHandler {
     const { id: credentialId } = request.auth.credentials;
 
     await this._service.verifyPlaylistAccess(playlistId, credentialId);
+    await this._service.checkSong(songId);
     await this._service.addPlaylistSongById(playlistId, songId);
 
     const time = new Date().toISOString();
@@ -78,7 +79,7 @@ class PlaylistsHandler {
     const { id: credentialId } = request.auth.credentials;
 
     await this._service.verifyPlaylistOwner(playlistId, credentialId);
-    await this._service.deletePlaylist(playlistId);
+    await this._service.deletePlaylistById(playlistId);
     return {
       status: 'success',
       message: 'Playlist berhasil dihapus.',

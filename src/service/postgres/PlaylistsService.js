@@ -38,7 +38,7 @@ class PlaylistsService {
 
     const result = await this._pool.query(query);
 
-    return result.rows[0];
+    return result.rows;
   }
 
   async addPlaylistSongById(playlistId, songId) {
@@ -60,7 +60,7 @@ class PlaylistsService {
   async getPlaylistSongsById(playlistId) {
     const queryPlaylist = {
       text: `SELECT playlists.id, playlists.name, users.username FROM playlists 
-    LEFT JOIN playlist_songs ON playlists.id = playlist_songs.id 
+    LEFT JOIN playlist_songs ON playlists.id = playlist_songs.playlist_id 
     LEFT JOIN users ON playlists.owner = users.id 
     WHERE playlists.id = $1`,
       values: [playlistId],
@@ -77,7 +77,7 @@ class PlaylistsService {
     const querySongs = {
       text: `SELECT songs.id, songs.title, songs.performer FROM songs 
     LEFT JOIN playlist_songs ON songs.id = playlist_songs.song_id 
-    WHERE playlist_songs.id = $1;`,
+    WHERE playlist_songs.playlist_id = $1;`,
       values: [playlistId],
     };
 
@@ -105,7 +105,7 @@ class PlaylistsService {
 
   async deletePlaylistSongById(playlistId, songId) {
     const query = {
-      text: 'DELETE FROM playlist_songs WHERE id = $1 AND song_id = $2 RETURNING id',
+      text: 'DELETE FROM playlist_songs WHERE playlist_id = $1 AND song_id = $2 RETURNING id',
       values: [playlistId, songId],
     };
     const result = await this._pool.query(query);
@@ -146,6 +146,17 @@ class PlaylistsService {
       } catch {
         throw error;
       }
+    }
+  }
+
+  async checkSong(songId) {
+    const query = {
+      text: 'SELECT * FROM songs WHERE id = $1',
+      values: [songId],
+    };
+    const result = await this._pool.query(query);
+    if (!result.rows.length) {
+      throw new NotFoundError('Lagu gagal ditambahkan. ID lagu tidak ditemukan.');
     }
   }
 
