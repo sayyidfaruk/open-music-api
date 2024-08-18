@@ -23,7 +23,7 @@ class ActivitiesService {
 
   async verifyPlaylistAccess(id, owner) {
     const query = {
-      text: 'SELECT * FROM playlists WHERE playlist_id = $1',
+      text: 'SELECT * FROM playlists WHERE id = $1',
       values: [id],
     };
 

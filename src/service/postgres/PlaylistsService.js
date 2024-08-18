@@ -31,8 +31,8 @@ class PlaylistsService {
     const query = {
       text: `SELECT playlists.id, playlists.name, users.username FROM playlists 
     LEFT JOIN users ON playlists.owner = users.id 
-    LEFT JOIN collaborations ON playlists.id = collaborations.id 
-    WHERE playlists.owner = $1 OR collaborations.id = $1`,
+    LEFT JOIN collaborations ON playlists.id = collaborations.playlist_id 
+    WHERE playlists.owner = $1 OR collaborations.user_id = $1`,
       values: [owner],
     };
 
@@ -128,7 +128,6 @@ class PlaylistsService {
     }
 
     const playlist = result.rows[0];
-
     if (playlist.owner !== owner) {
       throw new AuthorizationError('Anda tidak berhak mengakses resource ini.');
     }
