@@ -123,11 +123,10 @@ class AlbumsService {
 
     const query = {
       text: 'INSERT INTO user_album_likes VALUES($1, $2, $3) RETURNING id',
-      values: [id, albumId, credentialId],
+      values: [id, credentialId, albumId],
     };
 
     await this._pool.query(query);
-
     await this._cacheService.delete(`user_album_likes:${id}`);
   }
 
